@@ -167,6 +167,12 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    /**
+     * Handles the clicking of the checkbox in the menu. Inverts the checkbox and updates the value in shared preferences.
+     *
+     * @param item The checkbox in question
+     * @return true
+     */
     private fun handleOptionClick(item: MenuItem): Boolean
     {
         val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
@@ -189,6 +195,11 @@ class MainActivity : AppCompatActivity()
         return true
     }
 
+    /**
+     * Updates UI element with new swatch
+     *
+     * @param pair A pair of TextView and Palette.Swatch values to update
+     */
     private fun doUIWork(pair: Pair<TextView, Palette.Swatch>)
     {
         val hex = convertRGBtoHex(
@@ -219,6 +230,9 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    /**
+     * Grabs wallpaper and then performs the UI work
+     */
     private fun doWallpaperWork()
     {
         val wallpaperManager = WallpaperManager.getInstance(applicationContext)
@@ -232,6 +246,9 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    /**
+     * Attempts to get user permission to access the wallpaper, or simply executes doWallpaperWork() if permission is already granted
+     */
     private fun getWallpaperPerms()
     {
         if (ContextCompat.checkSelfPermission(
@@ -249,7 +266,14 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    // function to convert decimal to hexadecimal
+    /**
+     * Function to convert decimal to hexadecimal
+     * Adapted from https://www.geeksforgeeks.org/convert-the-given-rgb-color-code-to-hex-color-code/
+     *
+     * @author Code_r
+     * @param n The decimal in question
+     * @return The converted hex in String format
+     */
     private fun decToHexa(n: Int): String
     {
         // char array to store hexadecimal number
@@ -301,8 +325,16 @@ class MainActivity : AppCompatActivity()
         return hexCode
     }
 
-    // Function to convert the
-    // RGB code to Hex color code
+    /**
+     * Function to convert the RGB code to Hex color code
+     * Adapted from https://www.geeksforgeeks.org/convert-the-given-rgb-color-code-to-hex-color-code/
+     *
+     * @author Code_r
+     * @param R Red value
+     * @param G Green value
+     * @param B Blue value
+     * @return The RGB value converted to hex in String format
+     */
     private fun convertRGBtoHex(R: Int, G: Int, B: Int): String?
     {
         return if (R in 0..255
