@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Color Finder</string>
+    <string name="get_image">Get Image</string>
+    <string name="image_from_files">From files</string>
+    <string name="image_from_wallpaper">From wallpaper</string>
+    <string name="light_vibrant">Light Vibrant: </string>
+    <string name="vibrant">Vibrant: </string>
+    <string name="dark_vibrant">Dark Vibrant: </string>
+    <string name="light_muted">Light Muted: </string>
+    <string name="muted">Muted: </string>
+    <string name="dark_muted">Dark Muted: </string>
+    <string name="shortcut_disabled">Disabled</string>
+    <string name="shortcut_long_label">Grab colors from current wallpaper</string>
+    <string name="shortcut_short_label">Colors...</string>
+</resources>
