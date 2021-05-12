@@ -2,15 +2,22 @@ package com.example.colorfinder
 
 import android.app.AlertDialog
 import android.app.WallpaperManager
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,7 +28,8 @@ import androidx.core.graphics.red
 import androidx.palette.graphics.Palette
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()
+{
     lateinit var imageView: ImageView
     lateinit var fromFilesButton: Button
     lateinit var fromWallpaperButton: Button
@@ -34,10 +42,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var texts: Set<TextView>
     private lateinit var swatches: Set<Palette.Swatch>
     private var strings: MutableMap<TextView, String> = mutableMapOf()
+    private var imageUri: Uri? = null
 
-    private var imageUri: Uri?= null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -53,7 +61,13 @@ class MainActivity : AppCompatActivity() {
         mutedText = findViewById(R.id.textViewMuted)
         darkMutedText = findViewById(R.id.textViewDarkMuted)
 
-        texts = setOf(lightVibrantText, vibrantText, darkVibrantText, lightMutedText, mutedText, darkMutedText)
+        texts = setOf(
+            lightVibrantText,
+            vibrantText,
+            darkVibrantText,
+            lightMutedText,
+            mutedText,
+            darkMutedText)
         texts.forEach {
             strings[it] = it.text.toString()
         }
@@ -78,20 +92,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == Constants.PICK_IMAGE) {
+        if (resultCode == RESULT_OK && requestCode == Constants.PICK_IMAGE)
+        {
             imageUri = data?.data
             imageView.setImageURI(imageUri)
             Thread {
                 val bitmap = imageUri?.let {
                     ImageDecoder.createSource(
                         applicationContext.contentResolver,
-                        it
-                    )
+                        it)
                 }?.let { ImageDecoder.decodeBitmap(it).copy(Bitmap.Config.RGBA_F16, true) }
                 val palette = bitmap?.let { Palette.from(it).generate() }
-                if (palette != null) {
+                if (palette != null)
+                {
                     swatches = palette.swatches.toSet()
                 }
                 texts.zip(swatches).forEach {
@@ -106,8 +122,8 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+        grantResults: IntArray)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == Constants.REQUEST_STORAGE)
@@ -127,7 +143,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
 
@@ -138,11 +155,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
+        return when (item.itemId)
+        {
             R.id.copy_hashtag -> handleOptionClick(item)
             else -> super.onOptionsItemSelected(item)
         }
@@ -162,7 +181,7 @@ class MainActivity : AppCompatActivity() {
             item.isChecked = true
             newVal = 1
         }
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putInt(Constants.COPY_HASHTAG, newVal)
             apply()
         }
@@ -175,8 +194,7 @@ class MainActivity : AppCompatActivity() {
         val hex = convertRGBtoHex(
             pair.second.rgb.red,
             pair.second.rgb.green,
-            pair.second.rgb.blue
-        )
+            pair.second.rgb.blue)
         pair.first.setBackgroundColor(pair.second.rgb)
         pair.first.setTextColor(pair.second.bodyTextColor)
         pair.first.text = strings[pair.first] + " " + hex
@@ -216,9 +234,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun getWallpaperPerms()
     {
-        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
         {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), Constants.REQUEST_STORAGE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                Constants.REQUEST_STORAGE)
         }
         else
         {
@@ -227,14 +250,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     // function to convert decimal to hexadecimal
-    private fun decToHexa(n: Int): String {
+    private fun decToHexa(n: Int): String
+    {
         // char array to store hexadecimal number
         var n = n
         val hexaDeciNum = CharArray(2)
 
         // counter for hexadecimal number array
         var i = 0
-        while (n != 0) {
+        while (n != 0)
+        {
 
             // temporary variable to store remainder
             var temp = 0
@@ -243,23 +268,33 @@ class MainActivity : AppCompatActivity() {
             temp = n % 16
 
             // check if temp < 10
-            if (temp < 10) {
+            if (temp < 10)
+            {
                 hexaDeciNum[i] = (temp + 48).toChar()
                 i++
-            } else {
+            }
+            else
+            {
                 hexaDeciNum[i] = (temp + 55).toChar()
                 i++
             }
             n /= 16
         }
         var hexCode = ""
-        if (i == 2) {
-            hexCode += hexaDeciNum[0]
-            hexCode += hexaDeciNum[1]
-        } else if (i == 1) {
-            hexCode = "0"
-            hexCode += hexaDeciNum[0]
-        } else if (i == 0) hexCode = "00"
+        when (i)
+        {
+            2 ->
+            {
+                hexCode += hexaDeciNum[0]
+                hexCode += hexaDeciNum[1]
+            }
+            1 ->
+            {
+                hexCode = "0"
+                hexCode += hexaDeciNum[0]
+            }
+            0 -> hexCode = "00"
+        }
 
         // Return the equivalent
         // hexadecimal color code
@@ -268,17 +303,19 @@ class MainActivity : AppCompatActivity() {
 
     // Function to convert the
     // RGB code to Hex color code
-    private fun convertRGBtoHex(R: Int, G: Int, B: Int): String? {
+    private fun convertRGBtoHex(R: Int, G: Int, B: Int): String?
+    {
         return if (R in 0..255
             && G >= 0 && G <= 255
-            && B >= 0 && B <= 255
-        ) {
+            && B >= 0 && B <= 255)
+        {
             var hexCode: String? = "#"
             hexCode += decToHexa(R)
             hexCode += decToHexa(G)
             hexCode += decToHexa(B)
             hexCode
-        } else "-1"
+        }
+        else "-1"
     }
 }
 
