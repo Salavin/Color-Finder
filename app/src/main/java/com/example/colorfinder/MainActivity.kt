@@ -5,7 +5,6 @@ import android.app.WallpaperManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,15 +13,12 @@ import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.blue
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.palette.graphics.Palette
-import org.w3c.dom.Text
-import java.util.jar.Manifest
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,15 +35,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swatches: Set<Palette.Swatch>
     private var strings: MutableMap<TextView, String> = mutableMapOf()
 
-    private val pickImage = 100
-    private val requestStorage = 250
     private var imageUri: Uri?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        title = "Color Finder"
+        title = Constants.TITLE
         imageView = findViewById(R.id.imageView)
         fromFilesButton = findViewById(R.id.buttonFromFiles)
         fromWallpaperButton = findViewById(R.id.buttonFromWallpaper)
@@ -66,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         fromFilesButton.setOnClickListener {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, pickImage)
+            startActivityForResult(gallery, Constants.PICK_IMAGE)
         }
 
         fromWallpaperButton.setOnClickListener {
@@ -76,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         val extras = intent.extras
         if (extras != null)
         {
-            val fromShortcut = extras["from_shortcut"]
+            val fromShortcut = extras[Constants.FROM_SHORTCUT]
             if (fromShortcut == true)
             {
                 getWallpaperPerms()
@@ -86,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == pickImage) {
+        if (resultCode == RESULT_OK && requestCode == Constants.PICK_IMAGE) {
             imageUri = data?.data
             imageView.setImageURI(imageUri)
             Thread {
@@ -116,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == requestStorage)
+        if (requestCode == Constants.REQUEST_STORAGE)
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
@@ -138,8 +132,8 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val checkbox = menu.findItem(R.id.copy_hashtag)
-        val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
-        val copyHashtag = sharedPref.getInt("copy_hashtag", 1)
+        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
+        val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
         checkbox.isChecked = copyHashtag == 1
         return true
     }
@@ -156,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleOptionClick(item: MenuItem): Boolean
     {
-        val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
         val newVal: Int
         if (item.isChecked)
         {
@@ -169,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             newVal = 1
         }
         with (sharedPref.edit()) {
-            putInt("copy_hashtag", newVal)
+            putInt(Constants.COPY_HASHTAG, newVal)
             apply()
         }
 
@@ -178,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun doUIWork(pair: Pair<TextView, Palette.Swatch>)
     {
-        var hex = convertRGBtoHex(
+        val hex = convertRGBtoHex(
             pair.second.rgb.red,
             pair.second.rgb.green,
             pair.second.rgb.blue
@@ -188,8 +182,8 @@ class MainActivity : AppCompatActivity() {
         pair.first.text = strings[pair.first] + " " + hex
         pair.first.setOnClickListener { textView ->
             var finalHex: String? = hex
-            val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
-            val copyHashtag = sharedPref.getInt("copy_hashtag", 1)
+            val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
+            val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
             if ((copyHashtag == 0) && (hex?.get(0) == '#'))
             {
                 finalHex = hex.substring(1)
@@ -224,7 +218,7 @@ class MainActivity : AppCompatActivity() {
     {
         if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
         {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), requestStorage)
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), Constants.REQUEST_STORAGE)
         }
         else
         {
@@ -286,4 +280,13 @@ class MainActivity : AppCompatActivity() {
             hexCode
         } else "-1"
     }
+}
+
+object Constants
+{
+    const val PICK_IMAGE = 100
+    const val REQUEST_STORAGE = 250
+    const val COPY_HASHTAG = "copy_hashtag"
+    const val FROM_SHORTCUT = "from_shortcut"
+    const val TITLE = "Color Finder"
 }
