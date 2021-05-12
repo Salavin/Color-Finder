@@ -12,4 +12,5 @@
     <string name="shortcut_disabled">Disabled</string>
     <string name="shortcut_long_label">Grab colors from current wallpaper</string>
     <string name="shortcut_short_label">Colors...</string>
+    <string name="copy_hashtag_with_color_code">Copy hashtag with color code</string>
 </resources>

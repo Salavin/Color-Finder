@@ -9,10 +9,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -134,9 +133,52 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        val checkbox = menu.findItem(R.id.copy_hashtag)
+        val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
+        val copyHashtag = sharedPref.getInt("copy_hashtag", 1)
+        checkbox.isChecked = copyHashtag == 1
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.copy_hashtag -> handleOptionClick(item)
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun handleOptionClick(item: MenuItem): Boolean
+    {
+        val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
+        val newVal: Int
+        if (item.isChecked)
+        {
+            item.isChecked = false
+            newVal = 0
+        }
+        else
+        {
+            item.isChecked = true
+            newVal = 1
+        }
+        with (sharedPref.edit()) {
+            putInt("copy_hashtag", newVal)
+            apply()
+        }
+
+        return true
+    }
+
     private fun doUIWork(pair: Pair<TextView, Palette.Swatch>)
     {
-        val hex = convertRGBtoHex(
+        var hex = convertRGBtoHex(
             pair.second.rgb.red,
             pair.second.rgb.green,
             pair.second.rgb.blue
@@ -145,14 +187,21 @@ class MainActivity : AppCompatActivity() {
         pair.first.setTextColor(pair.second.bodyTextColor)
         pair.first.text = strings[pair.first] + " " + hex
         pair.first.setOnClickListener { textView ->
+            var finalHex: String? = hex
+            val sharedPref = getSharedPreferences("copy_hashtag", Context.MODE_PRIVATE)
+            val copyHashtag = sharedPref.getInt("copy_hashtag", 1)
+            if ((copyHashtag == 0) && (hex?.get(0) == '#'))
+            {
+                finalHex = hex.substring(1)
+            }
             val clipboard =
                 getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip: ClipData =
-                ClipData.newPlainText("Hex sequence containing color data", hex)
+                ClipData.newPlainText("Hex sequence containing color data", finalHex)
             clipboard.setPrimaryClip(clip)
             Toast.makeText(
                 applicationContext,
-                "Copied \"$hex\" to clipboard.",
+                "Copied \"$finalHex\" to clipboard.",
                 Toast.LENGTH_SHORT
             ).show()
         }

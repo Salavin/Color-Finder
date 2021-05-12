@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myapplication.MainActivity">
+    <item
+        android:id="@+id/copy_hashtag"
+        android:checkable="true"
+        android:title="@string/copy_hashtag_with_color_code"
+        app:actionViewClass="android.widget.CheckBox"
+        app:showAsAction="never" />
+</menu>
