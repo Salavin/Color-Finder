@@ -1,4 +1,4 @@
-package com.example.colorfinder
+package `in`.samlav.colorfinder
 
 import android.app.AlertDialog
 import android.app.WallpaperManager
@@ -26,6 +26,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.palette.graphics.Palette
+import com.example.colorfinder.R
 
 
 class MainActivity : AppCompatActivity()

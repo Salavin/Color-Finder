@@ -11,12 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ColorFinder">
-        <activity android:name=".About">
+        <activity android:name="in.samlav.colorfinder.About">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="in.samlav.colorfinder.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name="in.samlav.colorfinder.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
