@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity()
         return when (item.itemId)
         {
             R.id.copy_hashtag -> handleOptionClick(item)
+            R.id.about -> handleAboutClick(item)
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -191,6 +192,20 @@ class MainActivity : AppCompatActivity()
             putInt(Constants.COPY_HASHTAG, newVal)
             apply()
         }
+
+        return true
+    }
+
+    /**
+     * Handles the clicking of the about item in the menu. Starts the About Activity.
+     *
+     * @param item The MenuItem that got us here
+     * @return true
+     */
+    private fun handleAboutClick(item: MenuItem): Boolean
+    {
+        val intent = Intent(applicationContext, About::class.java)
+        startActivityForResult(intent, Constants.ABOUT_INTENT)
 
         return true
     }
@@ -342,9 +357,12 @@ class MainActivity : AppCompatActivity()
             && B >= 0 && B <= 255)
         {
             var hexCode: String? = "#"
-            hexCode += decToHexa(R)
-            hexCode += decToHexa(G)
-            hexCode += decToHexa(B)
+            hexCode += decToHexa(R)[1] // don't ask why
+            hexCode += decToHexa(R)[0]
+            hexCode += decToHexa(G)[1]
+            hexCode += decToHexa(G)[0]
+            hexCode += decToHexa(B)[1]
+            hexCode += decToHexa(B)[0]
             hexCode
         }
         else "-1"
@@ -355,7 +373,12 @@ object Constants
 {
     const val PICK_IMAGE = 100
     const val REQUEST_STORAGE = 250
+    const val ABOUT_INTENT = 10
     const val COPY_HASHTAG = "copy_hashtag"
     const val FROM_SHORTCUT = "from_shortcut"
     const val TITLE = "Color Finder"
+    const val ABOUT_TITLE = "About Color Finder"
+    const val PERSONAL_WEBSITE = "https://samlav.in"
+    const val REPOSITORY = "https://github.com/Salavin/Color-Finder"
+    const val GOOGLE_PAY = "https://gpay.app.goo.gl/pay-9su9NF43f9N"
 }

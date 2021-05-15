@@ -11,6 +11,13 @@
     <string name="dark_muted">Dark Muted: </string>
     <string name="shortcut_disabled">Disabled</string>
     <string name="shortcut_long_label">Grab colors from current wallpaper</string>
-    <string name="shortcut_short_label">Colors...</string>
+    <string name="shortcut_short_label">Colors…</string>
     <string name="copy_hashtag_with_color_code">Copy hashtag with color code</string>
+    <string name="about">About…</string>
+    <string name="about_text">App developed by Sam Lavin.</string>
+    <string name="my_website">My Website</string>
+    <string name="project_repository">Project Repository</string>
+    <string name="paypal">PayPal</string>
+    <string name="support_me">Support me (if you want):</string>
+    <string name="google_pay">Google Pay</string>
 </resources>

@@ -8,4 +8,9 @@
         android:title="@string/copy_hashtag_with_color_code"
         app:actionViewClass="android.widget.CheckBox"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/about"
+        android:checkable="false"
+        android:title="@string/about"
+        app:showAsAction="never" />
 </menu>
