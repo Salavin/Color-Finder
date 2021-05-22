@@ -7,4 +7,4 @@ A very simple app for finding the color palette of an image based on Google's Ma
 ## Credits
 [Code_r](https://www.geeksforgeeks.org/convert-the-given-rgb-color-code-to-hex-color-code/) for his `decToHexa` and `convertRGBtoHex` functions.
 
-[Jeremy Noesen](https://github.com/jeremynoesen) for the logo design.
+[Jeremy Noesen](https://github.com/jeremynoesen) for the logo and feature banner designs.
