@@ -150,9 +150,8 @@ class MainActivity : AppCompatActivity()
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val checkbox = menu.findItem(R.id.copy_hashtag)
-        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
-        val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
-        checkbox.isChecked = copyHashtag == 1
+        val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
+        checkbox.isChecked = sharedPref.getBoolean(Constants.COPY_HASHTAG, true)
         return true
     }
 
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity()
         return when (item.itemId)
         {
             R.id.copy_hashtag -> handleOptionClick(item)
-            R.id.about -> handleAboutClick(item)
+            R.id.about -> handleAboutClick()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -177,20 +176,10 @@ class MainActivity : AppCompatActivity()
      */
     private fun handleOptionClick(item: MenuItem): Boolean
     {
-        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
-        val newVal: Int
-        if (item.isChecked)
-        {
-            item.isChecked = false
-            newVal = 0
-        }
-        else
-        {
-            item.isChecked = true
-            newVal = 1
-        }
+        val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
+        item.isChecked = !item.isChecked
         with(sharedPref.edit()) {
-            putInt(Constants.COPY_HASHTAG, newVal)
+            putBoolean(Constants.COPY_HASHTAG, item.isChecked)
             apply()
         }
 
@@ -203,7 +192,7 @@ class MainActivity : AppCompatActivity()
      * @param item The MenuItem that got us here
      * @return true
      */
-    private fun handleAboutClick(item: MenuItem): Boolean
+    private fun handleAboutClick(): Boolean
     {
         val intent = Intent(applicationContext, About::class.java)
         startActivityForResult(intent, Constants.ABOUT_INTENT)
@@ -227,9 +216,9 @@ class MainActivity : AppCompatActivity()
         pair.first.text = strings[pair.first] + " " + hex
         pair.first.setOnClickListener { textView ->
             var finalHex: String? = hex
-            val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
-            val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
-            if ((copyHashtag == 0) && (hex?.get(0) == '#'))
+            val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
+            val copyHashtag = sharedPref.getBoolean(Constants.COPY_HASHTAG, true)
+            if (!copyHashtag && (hex?.get(0) == '#'))
             {
                 finalHex = hex.substring(1)
             }
@@ -377,6 +366,7 @@ object Constants
     const val ABOUT_INTENT = 10
     const val COPY_HASHTAG = "copy_hashtag"
     const val FROM_SHORTCUT = "from_shortcut"
+    const val SHARED_PREFERENCES = "pref"
     const val TITLE = "Color Finder"
     const val ABOUT_TITLE = "About Color Finder"
     const val PERSONAL_WEBSITE = "https://samlav.in"
