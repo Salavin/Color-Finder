@@ -151,8 +151,7 @@ class MainActivity : AppCompatActivity()
 
         val checkbox = menu.findItem(R.id.copy_hashtag)
         val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
-        checkbox.isChecked = copyHashtag == 1
+        checkbox.isChecked = sharedPref.getBoolean(Constants.COPY_HASHTAG, true)
         return true
     }
 
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity()
         return when (item.itemId)
         {
             R.id.copy_hashtag -> handleOptionClick(item)
-            R.id.about -> handleAboutClick(item)
+            R.id.about -> handleAboutClick()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -178,19 +177,9 @@ class MainActivity : AppCompatActivity()
     private fun handleOptionClick(item: MenuItem): Boolean
     {
         val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val newVal: Int
-        if (item.isChecked)
-        {
-            item.isChecked = false
-            newVal = 0
-        }
-        else
-        {
-            item.isChecked = true
-            newVal = 1
-        }
+        item.isChecked = !item.isChecked
         with(sharedPref.edit()) {
-            putInt(Constants.COPY_HASHTAG, newVal)
+            putBoolean(Constants.COPY_HASHTAG, item.isChecked)
             apply()
         }
 
@@ -203,7 +192,7 @@ class MainActivity : AppCompatActivity()
      * @param item The MenuItem that got us here
      * @return true
      */
-    private fun handleAboutClick(item: MenuItem): Boolean
+    private fun handleAboutClick(): Boolean
     {
         val intent = Intent(applicationContext, About::class.java)
         startActivityForResult(intent, Constants.ABOUT_INTENT)
@@ -228,8 +217,8 @@ class MainActivity : AppCompatActivity()
         pair.first.setOnClickListener { textView ->
             var finalHex: String? = hex
             val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
-            val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
-            if ((copyHashtag == 0) && (hex?.get(0) == '#'))
+            val copyHashtag = sharedPref.getBoolean(Constants.COPY_HASHTAG, true)
+            if (!copyHashtag && (hex?.get(0) == '#'))
             {
                 finalHex = hex.substring(1)
             }
