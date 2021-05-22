@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity()
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val checkbox = menu.findItem(R.id.copy_hashtag)
-        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
         val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
         checkbox.isChecked = copyHashtag == 1
         return true
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity()
      */
     private fun handleOptionClick(item: MenuItem): Boolean
     {
-        val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
         val newVal: Int
         if (item.isChecked)
         {
@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity()
         pair.first.text = strings[pair.first] + " " + hex
         pair.first.setOnClickListener { textView ->
             var finalHex: String? = hex
-            val sharedPref = getSharedPreferences(Constants.COPY_HASHTAG, Context.MODE_PRIVATE)
+            val sharedPref = getSharedPreferences(Constants.SHARED_PREFERENCES, Context.MODE_PRIVATE)
             val copyHashtag = sharedPref.getInt(Constants.COPY_HASHTAG, 1)
             if ((copyHashtag == 0) && (hex?.get(0) == '#'))
             {
@@ -377,6 +377,7 @@ object Constants
     const val ABOUT_INTENT = 10
     const val COPY_HASHTAG = "copy_hashtag"
     const val FROM_SHORTCUT = "from_shortcut"
+    const val SHARED_PREFERENCES = "pref"
     const val TITLE = "Color Finder"
     const val ABOUT_TITLE = "About Color Finder"
     const val PERSONAL_WEBSITE = "https://samlav.in"
