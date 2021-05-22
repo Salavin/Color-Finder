@@ -8,8 +8,8 @@
         android:shortcutDisabledMessage="@string/shortcut_disabled">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.example.colorfinder"
-            android:targetClass="com.example.colorfinder.MainActivity" >
+            android:targetPackage="in.samlav.colorfinder"
+            android:targetClass="in.samlav.colorfinder.MainActivity" >
             <extra
                 android:name="from_shortcut"
                 android:value="true" />
